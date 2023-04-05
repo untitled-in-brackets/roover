@@ -30,7 +30,6 @@ import { EVENTS } from '../../utils/constants';
  * @return {boolean} playing - Whether the audio is playing.
  * @return {boolean} paused - Whether the audio is paused.
  * @return {boolean} end - Whether the audio has ended.
- * @return {number} seek - The seek value of the audio.
  * @return {number} volume - The volume value of the audio.
  * @return {number} rate - The rate value of the audio.
  * @return {number} duration - The duration value of the audio.
@@ -63,9 +62,6 @@ const useRoover = ({
   const playerRef: MutableRefObject<HTMLAudioElement | undefined> = useRef<
     HTMLAudioElement | undefined
   >(undefined);
-
-  const [seek, setSeek] = useState<number>(0);
-  const seekRef: MutableRefObject<number> = useRef<number>(0);
 
   const initial = useSelector(service, state => state.matches('initial'));
   const loading: boolean = useSelector(service, state =>
@@ -108,21 +104,15 @@ const useRoover = ({
     state => state.context.error
   );
 
-  useEffect(() => {
-    const animate = () => {
-      const seek = audio?.currentTime;
-      setSeek(seek as number);
-      seekRef.current = requestAnimationFrame(animate);
-    };
-    if (audio && playing) {
-      seekRef.current = requestAnimationFrame(animate);
-    }
-    return () => {
-      if (seekRef.current) {
-        cancelAnimationFrame(seekRef.current);
-      }
-    };
-  }, [audio, playing]);
+  /**
+   * We expose a method to get the current time so that
+   * the user can choose the frequency.
+   * @returns number
+   */
+  const getCurrentTime = useCallback(() => {
+    if (!audio) return 0;
+    return audio.currentTime;
+  }, [audio]);
 
   /**
    * Should create new audio element and play it.
@@ -183,142 +173,108 @@ const useRoover = ({
    * Pause the audio.
    * @returns void
    */
-  const onPause = useCallback((): void => {
+  const onPause = (): void => {
     if (!audio) return;
     service.send(EVENTS.PAUSE);
     audio.pause();
-  }, [service, audio]);
+  };
 
   /**
    * Set 'mute' to true or false depending of the current value.
    * @returns void
    */
-  const onMute = useCallback((): void => {
+  const onMute = (): void => {
     if (!audio) return;
     service.send(EVENTS.MUTE);
     audio.muted = !playerContextMute;
-  }, [service, playerContextMute, audio]);
+  };
 
   /**
    * Set 'loop' to true or false depending of the current value.
    * @returns void
    */
-  const onLoop = useCallback((): void => {
+  const onLoop = (): void => {
     if (!audio) return;
     service.send(EVENTS.LOOP);
     audio.loop = !playerContextLoop;
-  }, [service, playerContextLoop, audio]);
+  };
 
   /**
    * Changes the volume of the audio.
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onVolume = useCallback(
-    (value: number): void => {
-      if (!audio) return;
-      service.send({ type: EVENTS.VOLUME, volume: value });
-      audio.volume = value;
-    },
-    [service, audio]
-  );
+  const onVolume = (value: number): void => {
+    if (!audio) return;
+    service.send({ type: EVENTS.VOLUME, volume: value });
+    audio.volume = value;
+  };
 
   /**
    * Changes the playback rate of the audio.
    * @param {string} value - The value of the volume.
    * @returns void
    */
-  const onRate = useCallback(
-    (value: string): void => {
-      if (!audio) return;
-      const rate: number = parseFloat(value);
-      service.send({ type: EVENTS.RATE, rate });
-      audio.playbackRate = rate;
-    },
-    [service, audio]
-  );
+  const onRate = (value: string): void => {
+    if (!audio) return;
+    const rate: number = parseFloat(value);
+    service.send({ type: EVENTS.RATE, rate });
+    audio.playbackRate = rate;
+  };
 
   /**
    * Changes the seek of the audio.
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onSeek = useCallback(
-    (value: number): void => {
-      if (!audio) return;
-      setSeek(value);
-      audio.currentTime = value;
-    },
-    [setSeek, audio]
-  );
+  const onSeek = (value: number): void => {
+    if (!audio) return;
+    audio.currentTime = value;
+  };
 
   /**
    * Forward the seek value of the audio.
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onForward = useCallback(
-    (value: number): void => {
-      if (!audio || audio.ended) return;
-      const newSeek: number = seek + value;
-      setSeek(newSeek);
-      audio.currentTime = newSeek;
-    },
-    [setSeek, seek, audio]
-  );
+  const onForward = (value: number): void => {
+    if (!audio || audio.ended) return;
+    const newSeek: number = audio.currentTime + value;
+    audio.currentTime = newSeek;
+  };
 
   /**
    * Backward the seek value of the audio.
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onBackward = useCallback(
-    (value: number): void => {
-      if (!audio || audio.ended) return;
-      const newSeek: number = Math.max(seek - value, 0);
-      setSeek(newSeek);
-      audio.currentTime = newSeek;
-    },
-    [seek, audio]
-  );
+  const onBackward = (value: number): void => {
+    if (!audio || audio.ended) return;
+    const newSeek: number = Math.max(audio.currentTime - value, 0);
+    audio.currentTime = newSeek;
+  };
 
-  const onAudioSrcChange = useCallback(
-    (src: string): void => {
-      if (!audio) return;
-      onPause();
-      onSeek(0);
-      const newAudio = onLoadAudio(onDestroyAudio(audio), {
-        src,
-        preload,
-        autoplay: false,
-        volume,
-        rate,
-        mute,
-        loop,
-      });
-      setAudio(newAudio);
-      playerRef.current = newAudio;
-    },
-    [
-      audio,
-      loop,
-      mute,
-      onPause,
-      onSeek,
-      onDestroyAudio,
-      onLoadAudio,
+  const onAudioSrcChange = (): void => {
+    if (!audio) return;
+    onPause();
+    onSeek(0);
+    const newAudio = onLoadAudio(onDestroyAudio(audio), {
+      src,
       preload,
-      rate,
+      autoplay: false,
       volume,
-    ]
-  );
+      rate,
+      mute,
+      loop,
+    });
+    setAudio(newAudio);
+    playerRef.current = newAudio;
+  };
 
   /**
    * Handle audio src changing
    */
-  useEffect(() => {
-    onAudioSrcChange(src);
-  }, [src, onAudioSrcChange]);
+  useEffect(onAudioSrcChange, [src]);
 
   return {
     initial,
@@ -328,13 +284,13 @@ const useRoover = ({
     playing,
     paused,
     end,
-    seek,
     volume: playerContextVolume,
     rate: playerContextRate,
     duration: playerContextDuration,
     mute: playerContextMute,
     loop: playerContextLoop,
     error: playerContextError,
+    getCurrentTime,
     onToggle,
     onPlay,
     onPause,

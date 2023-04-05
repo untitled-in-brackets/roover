@@ -22,6 +22,7 @@ const src2: string =
 
 const App = () => {
   const [track, setTrack] = React.useState<string>(src1);
+  const [seek, setSeek] = React.useState<number>(0);
   const {
     initial,
     loading,
@@ -30,7 +31,6 @@ const App = () => {
     playing,
     paused,
     end,
-    seek,
     volume,
     rate,
     duration,
@@ -50,8 +50,8 @@ const App = () => {
   } = useRoover({
     src: track,
     autoplay: true,
+    onSeekChange: (value: number) => setSeek(value),
   });
-  console.log('o k');
   return (
     <ChakraProvider theme={theme}>
       <Box

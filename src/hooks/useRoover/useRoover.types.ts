@@ -6,6 +6,7 @@ export interface Args {
   rate?: number;
   mute?: boolean;
   loop?: boolean;
+  onSeekChange?: (seek: number) => void;
 }
 
 export type ReturnArgs = {
@@ -16,13 +17,13 @@ export type ReturnArgs = {
   playing: boolean;
   paused: boolean;
   end: boolean;
-  seek: number;
   volume: number;
   rate: number;
   duration: number;
   mute: boolean;
   loop: boolean;
   error: string | null;
+  getCurrentTime: () => number;
   onToggle: () => void;
   onPlay: () => void;
   onPause: () => void;

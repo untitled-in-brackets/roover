@@ -18,7 +18,6 @@ interface Props {
 
 const Source = ({
   gridRow,
-  playing,
   onPlay,
   onPause,
   onToggle,
@@ -42,15 +41,12 @@ const Source = ({
       <Button type="button" onClick={onToggle}>
         Toggle
       </Button>
-      {!playing ? (
-        <Button type="button" onClick={onPlay}>
-          Play
-        </Button>
-      ) : (
-        <Button type="button" onClick={onPause}>
-          Pause
-        </Button>
-      )}
+      <Button type="button" onClick={onPlay}>
+        Play
+      </Button>
+      <Button type="button" onClick={onPause}>
+        Pause
+      </Button>
       <Button type="button" onClick={() => onForward(15)}>
         +15
       </Button>
