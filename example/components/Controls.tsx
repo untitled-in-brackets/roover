@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Button,
   Text,
@@ -8,7 +8,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Grid,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 interface Props {
   seek: number;
@@ -24,10 +24,36 @@ interface Props {
   onSeek: (value: number) => void;
 }
 
-const Controls = ({ seek, volume, rate, duration, mute, loop, onVolume, onRate, onMute, onLoop, onSeek }: Props) => {
+const Controls = ({
+  seek,
+  volume,
+  rate,
+  duration,
+  mute,
+  loop,
+  onVolume,
+  onRate,
+  onMute,
+  onLoop,
+  onSeek,
+}: Props) => {
   return (
-    <Grid width="fit-content" height="auto" templateRows="repeat(auto-fill, max-content)" gridRow="5 / 6" gridColumn="1 / 2" gap={3}>
-      <Grid width="fit-content" height="auto" templateColumns="60px max-content" gap={2} alignItems="center" justifyContent="center">
+    <Grid
+      width="fit-content"
+      height="auto"
+      templateRows="repeat(auto-fill, max-content)"
+      gridRow="5 / 6"
+      gridColumn="1 / 2"
+      gap={3}
+    >
+      <Grid
+        width="fit-content"
+        height="auto"
+        templateColumns="60px max-content"
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Text>Seek</Text>
         <Slider
           aria-label="slider-ex-1"
@@ -37,7 +63,8 @@ const Controls = ({ seek, volume, rate, duration, mute, loop, onVolume, onRate, 
           onChange={onSeek}
           min={0}
           max={duration}
-          step={0.1}>
+          step={0.1}
+        >
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
@@ -45,7 +72,14 @@ const Controls = ({ seek, volume, rate, duration, mute, loop, onVolume, onRate, 
         </Slider>
       </Grid>
 
-      <Grid width="fit-content" height="auto" templateColumns="60px max-content" gap={2} alignItems="center" justifyContent="center">
+      <Grid
+        width="fit-content"
+        height="auto"
+        templateColumns="60px max-content"
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Text>Volume</Text>
         <Slider
           aria-label="slider-ex-1"
@@ -55,7 +89,8 @@ const Controls = ({ seek, volume, rate, duration, mute, loop, onVolume, onRate, 
           onChange={onVolume}
           min={0}
           max={1}
-          step={0.1}>
+          step={0.1}
+        >
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
@@ -63,9 +98,20 @@ const Controls = ({ seek, volume, rate, duration, mute, loop, onVolume, onRate, 
         </Slider>
       </Grid>
 
-      <Grid width="fit-content" height="auto" templateColumns="60px max-content" gap={2} alignItems="center" justifyContent="center">
+      <Grid
+        width="fit-content"
+        height="auto"
+        templateColumns="60px max-content"
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Text>Rate</Text>
-        <Select placeholder="Select rate" value={rate} onChange={(e: any) => onRate(e.target.value)}>
+        <Select
+          placeholder="Select rate"
+          value={rate}
+          onChange={(e: any) => onRate(e.target.value)}
+        >
           <option value="3">3</option>
           <option value="2">2</option>
           <option value="1">1</option>
@@ -73,17 +119,35 @@ const Controls = ({ seek, volume, rate, duration, mute, loop, onVolume, onRate, 
         </Select>
       </Grid>
 
-      <Grid width="fit-content" height="auto" templateColumns="60px max-content" gap={2} alignItems="center" justifyContent="center">
+      <Grid
+        width="fit-content"
+        height="auto"
+        templateColumns="60px max-content"
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Text>Mute</Text>
-        <Button type="button" onClick={onMute}>{mute ? "Unmute" : "Mute"}</Button>
+        <Button type="button" onClick={onMute}>
+          {mute ? 'Unmute' : 'Mute'}
+        </Button>
       </Grid>
 
-      <Grid width="fit-content" height="auto" templateColumns="60px max-content" gap={2} alignItems="center" justifyContent="center">
+      <Grid
+        width="fit-content"
+        height="auto"
+        templateColumns="60px max-content"
+        gap={2}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Text>Loop</Text>
-        <Button type="button" onClick={onLoop}>{loop ? "Unloop" : "Loop"}</Button>
+        <Button type="button" onClick={onLoop}>
+          {loop ? 'Unloop' : 'Loop'}
+        </Button>
       </Grid>
     </Grid>
-  )
+  );
 };
 
 export default Controls;

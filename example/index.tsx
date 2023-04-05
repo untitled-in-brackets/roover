@@ -22,7 +22,6 @@ const src2: string =
 
 const App = () => {
   const [track, setTrack] = React.useState<string>(src1);
-  const [seek, setSeek] = React.useState<number>(0);
   const {
     initial,
     loading,
@@ -37,21 +36,38 @@ const App = () => {
     mute,
     loop,
     error,
-    onToggle,
-    onPlay,
-    onPause,
-    onVolume,
-    onRate,
-    onMute,
-    onLoop,
-    onSeek,
-    onForward,
-    onBackward,
+    getCurrentTime,
+    toggle,
+    play,
+    pause,
+    setVolume,
+    setRate,
+    toggleMute,
+    toggleLoop,
+    seekTo,
+    skipForward,
+    skipBackward,
   } = useRoover({
     src: track,
     autoplay: true,
-    onSeekChange: (value: number) => setSeek(value),
   });
+  const seekRef = React.useRef<number | null>(null);
+  const [seek, setSeek] = React.useState<number>(0);
+  React.useEffect(() => {
+    const animate = () => {
+      const seek = getCurrentTime();
+      setSeek(seek as number);
+      seekRef.current = requestAnimationFrame(animate);
+    };
+    if (playing) {
+      seekRef.current = requestAnimationFrame(animate);
+    }
+    return () => {
+      if (seekRef.current) {
+        cancelAnimationFrame(seekRef.current);
+      }
+    };
+  }, [playing]);
   return (
     <ChakraProvider theme={theme}>
       <Box
@@ -100,11 +116,11 @@ const App = () => {
             idle={idle}
             playing={playing}
             paused={paused}
-            onPlay={onPlay}
-            onPause={onPause}
-            onToggle={onToggle}
-            onForward={onForward}
-            onBackward={onBackward}
+            onPlay={play}
+            onPause={pause}
+            onToggle={toggle}
+            onForward={skipForward}
+            onBackward={skipBackward}
           />
 
           <Controls
@@ -114,14 +130,15 @@ const App = () => {
             duration={duration}
             mute={mute}
             loop={loop}
-            onVolume={onVolume}
-            onRate={onRate}
-            onMute={onMute}
-            onLoop={onLoop}
-            onSeek={onSeek}
+            onVolume={setVolume}
+            onRate={setRate}
+            onMute={toggleMute}
+            onLoop={toggleLoop}
+            onSeek={seekTo}
           />
 
           <Details
+            seek={seek}
             initial={initial}
             loading={loading}
             ready={ready}
@@ -129,7 +146,6 @@ const App = () => {
             playing={playing}
             paused={paused}
             end={end}
-            seek={seek}
             volume={volume}
             rate={rate}
             duration={duration}

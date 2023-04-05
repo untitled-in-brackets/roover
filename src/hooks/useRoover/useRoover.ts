@@ -35,16 +35,16 @@ import { EVENTS } from '../../utils/constants';
  * @return {boolean} mute - The mute value of the audio.
  * @return {boolean} loop - The loop value of the audio.
  * @return {function} getCurrentTime - Function to get the current time of the audio.
- * @return {function} onToggle - Function to toggle the audio.
- * @return {function} onPlay - Function to play the audio.
- * @return {function} onPause - Function to pause the audio.
+ * @return {function} toggle - Function to toggle the audio.
+ * @return {function} play - Function to play the audio.
+ * @return {function} pause - Function to pause the audio.
  * @return {function} onVolume - Function to change the volume of the audio.
  * @return {function} onRate - Function to change the rate of the audio.
- * @return {function} onMute - Function to mute/unmute the audio.
- * @return {function} onLoop - Function to loop/unloop the audio.
- * @return {function} onSeek - Function to change the seek of the audio.
- * @return {function} onForward - Function to forward the audio in a specific amount of seconds.
- * @return {function} onBackward - Function to backward the audio in a specific amount of seconds.
+ * @return {function} mute - Function to mute/unmute the audio.
+ * @return {function} loop - Function to loop/unloop the audio.
+ * @return {function} seek - Function to change the seek of the audio.
+ * @return {function} forward - Function to forward the audio in a specific amount of seconds.
+ * @return {function} backward - Function to backward the audio in a specific amount of seconds.
  */
 
 const useRoover = ({
@@ -119,7 +119,7 @@ const useRoover = ({
    * In case audio exists, it will play or pause based on the current state.
    * @returns void
    */
-  const onToggle = (): void => {
+  const toggle = (): void => {
     if (!audio) {
       const newAudio = onLoadAudio(audio, {
         src,
@@ -148,7 +148,7 @@ const useRoover = ({
    * Play the audio.
    * @returns void
    */
-  const onPlay = (): void => {
+  const play = (): void => {
     if (!audio) {
       const newAudio = onLoadAudio(audio, {
         src,
@@ -173,7 +173,7 @@ const useRoover = ({
    * Pause the audio.
    * @returns void
    */
-  const onPause = (): void => {
+  const pause = (): void => {
     if (!audio) return;
     service.send(EVENTS.PAUSE);
     audio.pause();
@@ -183,7 +183,7 @@ const useRoover = ({
    * Set 'mute' to true or false depending of the current value.
    * @returns void
    */
-  const onMute = (): void => {
+  const toggleMute = (): void => {
     if (!audio) return;
     service.send(EVENTS.MUTE);
     audio.muted = !playerContextMute;
@@ -193,7 +193,7 @@ const useRoover = ({
    * Set 'loop' to true or false depending of the current value.
    * @returns void
    */
-  const onLoop = (): void => {
+  const toggleLoop = (): void => {
     if (!audio) return;
     service.send(EVENTS.LOOP);
     audio.loop = !playerContextLoop;
@@ -204,7 +204,7 @@ const useRoover = ({
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onVolume = (value: number): void => {
+  const setVolume = (value: number): void => {
     if (!audio) return;
     service.send({ type: EVENTS.VOLUME, volume: value });
     audio.volume = value;
@@ -215,7 +215,7 @@ const useRoover = ({
    * @param {string} value - The value of the volume.
    * @returns void
    */
-  const onRate = (value: string): void => {
+  const setRate = (value: string): void => {
     if (!audio) return;
     const rate: number = parseFloat(value);
     service.send({ type: EVENTS.RATE, rate });
@@ -227,7 +227,7 @@ const useRoover = ({
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onSeek = (value: number): void => {
+  const seekTo = (value: number): void => {
     if (!audio) return;
     audio.currentTime = value;
   };
@@ -237,7 +237,7 @@ const useRoover = ({
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onForward = (value: number): void => {
+  const skipForward = (value: number): void => {
     if (!audio || audio.ended) return;
     const newSeek: number = audio.currentTime + value;
     audio.currentTime = newSeek;
@@ -248,7 +248,7 @@ const useRoover = ({
    * @param {number} value - The value of the volume.
    * @returns void
    */
-  const onBackward = (value: number): void => {
+  const skipBackward = (value: number): void => {
     if (!audio || audio.ended) return;
     const newSeek: number = Math.max(audio.currentTime - value, 0);
     audio.currentTime = newSeek;
@@ -256,8 +256,8 @@ const useRoover = ({
 
   const onAudioSrcChange = (): void => {
     if (!audio) return;
-    onPause();
-    onSeek(0);
+    pause();
+    seekTo(0);
     const newAudio = onLoadAudio(onDestroyAudio(audio), {
       src,
       preload,
@@ -291,16 +291,16 @@ const useRoover = ({
     loop: playerContextLoop,
     error: playerContextError,
     getCurrentTime,
-    onToggle,
-    onPlay,
-    onPause,
-    onVolume,
-    onRate,
-    onMute,
-    onLoop,
-    onSeek,
-    onForward,
-    onBackward,
+    toggle,
+    play,
+    pause,
+    setVolume,
+    setRate,
+    toggleMute,
+    toggleLoop,
+    seekTo,
+    skipForward,
+    skipBackward,
   };
 };
 

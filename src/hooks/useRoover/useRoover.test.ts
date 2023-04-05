@@ -51,7 +51,9 @@ describe('useRoover', () => {
   //     expect(result.current.paused).toBe(false);
   //     expect(result.current.end).toBe(false);
 
-  //     act(() => result.current.onToggle());
+  //     act(() => result.current.toggle());
+
+  //     console.log(result.current);
 
   //     await waitFor(() => {
   //       expect(result.current.initial).toBe(false);
