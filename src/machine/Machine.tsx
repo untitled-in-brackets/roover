@@ -14,6 +14,7 @@ const Machine = createMachine<MachineContext, MachineEvent>(
   {
     id: 'roover',
     initial: 'initial',
+    predictableActionArguments: true,
     context: {
       volume: 1.0,
       rate: 1.0,
