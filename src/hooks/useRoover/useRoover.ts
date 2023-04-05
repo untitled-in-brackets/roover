@@ -132,6 +132,8 @@ const useRoover = ({
       });
       setAudio(newAudio);
       playerRef.current = newAudio;
+      newAudio.play();
+      service.send(EVENTS.PLAY);
     } else {
       if (ready || paused) {
         audio.play();
