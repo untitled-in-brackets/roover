@@ -22,7 +22,6 @@ import { EVENTS } from '../../utils/constants';
  * @param {number} rate - The rate property for the audio.
  * @param {boolean} mute - The mute property for the audio.
  * @param {boolean} loop - The loop property for the audio.
- *
  * @return {boolean} initial - Whether the audio is initial.
  * @return {boolean} loading - Whether the audio is loading.
  * @return {boolean} ready - Whether the audio is ready.
@@ -35,6 +34,7 @@ import { EVENTS } from '../../utils/constants';
  * @return {number} duration - The duration value of the audio.
  * @return {boolean} mute - The mute value of the audio.
  * @return {boolean} loop - The loop value of the audio.
+ * @return {function} getCurrentTime - Function to get the current time of the audio.
  * @return {function} onToggle - Function to toggle the audio.
  * @return {function} onPlay - Function to play the audio.
  * @return {function} onPause - Function to pause the audio.

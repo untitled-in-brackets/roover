@@ -6,7 +6,6 @@ export interface Args {
   rate?: number;
   mute?: boolean;
   loop?: boolean;
-  onSeekChange?: (seek: number) => void;
 }
 
 export type ReturnArgs = {
