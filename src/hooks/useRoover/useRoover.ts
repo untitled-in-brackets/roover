@@ -56,7 +56,6 @@ const useRoover = ({
   mute = false,
   loop = false,
 }: Args): ReturnArgs => {
-  console.log('autopla11y', autoplay);
   const { service, onLoadAudio, onDestroyAudio } = useAudio();
 
   const [audio, setAudio] = useState<HTMLAudioElement | undefined>(undefined);
@@ -125,7 +124,7 @@ const useRoover = ({
       const newAudio = onLoadAudio(audio, {
         src,
         preload,
-        autoplay: true,
+        autoplay,
         volume,
         rate,
         mute,
@@ -154,7 +153,7 @@ const useRoover = ({
       const newAudio = onLoadAudio(audio, {
         src,
         preload,
-        autoplay: true,
+        autoplay,
         volume,
         rate,
         mute,
