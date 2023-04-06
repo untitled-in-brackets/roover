@@ -65,9 +65,6 @@ const useAudio: UseAudio = () => {
     // When the audio has loaded successfully, it will triger a 'READY' event and change values in the context.
     audioElement.addEventListener('loadeddata', () => {
       service.send(STATUS.READY, { duration: audioElement.duration });
-
-      // TODO(ryan): This is a hack to get the audio to play on iOS.
-      audioElement.play();
     });
     // When the audio has a loading error, it will trigger a 'ERROR' event.
     audioElement.addEventListener('error', () => {
