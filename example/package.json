@@ -7,7 +7,7 @@
   "source": "index.html",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build"
+    "build": "parcel build "
   },
   "dependencies": {
     "react": ">=16.8.6",

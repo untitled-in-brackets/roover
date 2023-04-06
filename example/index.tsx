@@ -21,7 +21,7 @@ const src2: string =
   'https://untitled-audio-bucket-test.s3.amazonaws.com/72d958df474d1a11415dcea5f473d0e85818c1fe.wav';
 
 const App = () => {
-  const [track, setTrack] = React.useState<string>(src1);
+  const [track, setTrack] = React.useState<string | null>(null);
   const {
     initial,
     loading,
@@ -48,9 +48,10 @@ const App = () => {
     skipForward,
     skipBackward,
   } = useRoover({
-    src: track,
+    src: track ?? '',
     autoplay: true,
   });
+
   const seekRef = React.useRef<number | null>(null);
   const [seek, setSeek] = React.useState<number>(0);
   React.useEffect(() => {
@@ -116,6 +117,9 @@ const App = () => {
             idle={idle}
             playing={playing}
             paused={paused}
+            onPlayClicked={() => {
+              setTrack(src2);
+            }}
             onPlay={play}
             onPause={pause}
             onToggle={toggle}

@@ -16,6 +16,10 @@ const useAudio: UseAudio = () => {
     devTools: process.env.NODE_ENV === 'development',
   });
 
+  // const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+  // const audioContext = new AudioContext();
+
   /**
    * Create a new Audio element and returns it.
    * @param {string} src - The src of the audio to be loaded.
@@ -38,6 +42,8 @@ const useAudio: UseAudio = () => {
   }: CreateAudioArgs): HTMLAudioElement => {
     const audioElement: HTMLAudioElement = new Audio(src);
 
+    //const _ = audioContext.createMediaElementSource(audioElement);
+
     // Autoplay should be 'false' by default.
     // Read more here: https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/autoplay
     audioElement.autoplay = autoplay;
@@ -59,6 +65,9 @@ const useAudio: UseAudio = () => {
     // When the audio has loaded successfully, it will triger a 'READY' event and change values in the context.
     audioElement.addEventListener('loadeddata', () => {
       service.send(STATUS.READY, { duration: audioElement.duration });
+
+      // TODO(ryan): This is a hack to get the audio to play on iOS.
+      audioElement.play();
     });
     // When the audio has a loading error, it will trigger a 'ERROR' event.
     audioElement.addEventListener('error', () => {
@@ -98,7 +107,7 @@ const useAudio: UseAudio = () => {
    * Check if there are any audio available.
    * If there's no audio available, it creates a new one and returns it.
    * If there's a current audio available, checks if the src of the current audio is equal to the new audio that's trying to be loaded.
-   *  In case the src is the same, it returns the audio. Otherwise, it replaces the src of the current audio with the new src.
+   * In case the src is the same, it returns the audio. Otherwise, it replaces the src of the current audio with the new src.
    * @param {HTMLAudioElement | undefined} audio - The audio element.
    * @param {CreateAudioArgs} args - Object to pass to Audio element.
    * @returns HTMLAudioElement | undefined

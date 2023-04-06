@@ -23,6 +23,7 @@ const Source = ({
   onToggle,
   onForward,
   onBackward,
+  onPlayClicked,
 }: Props) => {
   return (
     <Grid
@@ -41,7 +42,13 @@ const Source = ({
       <Button type="button" onClick={onToggle}>
         Toggle
       </Button>
-      <Button type="button" onClick={onPlay}>
+      <Button
+        type="button"
+        onClick={() => {
+          onPlayClicked();
+          onPlay();
+        }}
+      >
         Play
       </Button>
       <Button type="button" onClick={onPause}>
