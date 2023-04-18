@@ -45,7 +45,6 @@ const Source = ({
       <Button
         type="button"
         onClick={() => {
-          onPlayClicked();
           onPlay();
         }}
       >

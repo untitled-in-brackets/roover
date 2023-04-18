@@ -118,7 +118,8 @@ const App = () => {
             playing={playing}
             paused={paused}
             onPlayClicked={() => {
-              setTrack(src2);
+              console.log('set', src1);
+              setTrack(src1);
             }}
             onPlay={play}
             onPause={pause}

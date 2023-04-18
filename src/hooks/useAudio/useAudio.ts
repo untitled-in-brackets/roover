@@ -41,8 +41,21 @@ const useAudio: UseAudio = () => {
     loop = false,
   }: CreateAudioArgs): HTMLAudioElement => {
     const audioElement: HTMLAudioElement = new Audio(src);
+    audioElement.crossOrigin = 'anonymous';
+    const AudioContext =
+      window.AudioContext || // Default
+      window.webkitAudioContext || // Safari and old versions of Chrome
+      false;
 
-    //const _ = audioContext.createMediaElementSource(audioElement);
+    const audioContext = new AudioContext();
+    const source = audioContext.createMediaElementSource(audioElement);
+
+    // Connect to output (speakers)
+    source.connect(audioContext.destination);
+
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
 
     // Autoplay should be 'false' by default.
     // Read more here: https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/autoplay
